@@ -1,5 +1,5 @@
 # dane-county-psa-analysis
-Replication files for a final project completed for ECON 970 at Harvard University, Fall 2025.
+Replication files for final research and data analysis project completed for ECON 970: Applying Economic Theory to the Law at Harvard University, Fall 2025.
 
 # Overview
 This project examines how judges utilize algorithmic risk assessment outputs in their pretrial detention decisions and what the implications of these behaviors are for accuracy and economic efficiency, using administrative court data from a randomized PSA provision experiment conducted in Dane County, Wisconsin, between 2017-2018. I use Stata to estimate logit regressions and analyze the effects of providing judges with PSA recommendations on judges' propensity to override the algorithm's recommendation in a more favorable direction for the defendant and the impact of PSA provision on judges' pretrial release versus detention decisions. The repository contains all files necessary to reproduce the empirical analysis and results presented in my final project.
