@@ -26,9 +26,8 @@ The dataset used in this analysis is stored in `data/raw/`. The cleaned dataset 
   question, data, methodology, results, and conclusions.
 
 # Author
-Juliet Bu (Harvard College Class of 2027)
+Juliet Bu (Harvard College Class of 2027)  
 Harvard University  
-Department of Economics
-
+Department of Economics  
 This project was completed as part of coursework and reflects independent student work.
 
