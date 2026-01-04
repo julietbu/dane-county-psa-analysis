@@ -1,0 +1,166 @@
+-------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/julietbu/Downloads/ECON970/Final Project/output/psa_analysis.log
+  log type:  text
+ opened on:   9 Dec 2025, 16:39:26
+
+. 
+. * Add row ids to each observation for merging. In package documentation for this replication dataset, original au
+> thors refer to these files as parallel interim datasets created directly from the RCT pipeline, meaning they are 
+> aligned row-by-row.
+. * Edit datasets for merging, eliminating duplicate variables in FTA, NCA, and NVCA datasets already existing in P
+> SA dataset.
+. use "/Users/julietbu/Downloads/ECON970/Final Project/data/FTAdata.dta", clear
+
+. rename Y Y_FTA
+
+. ds
+Sex           Age           ViolentMis~e  PriorMisde~n  PriorSente~n  Staff_Rele~n  Y_FTA
+White         PendingCha~e  ViolentFel~e  PriorFelon~n  PriorFTAIn~s  Z
+SexWhite      NCorNonVio~e  NonViolent~e  PriorViole~n  PriorFTAOl~s  D
+
+. local fta_vars `r(varlist)'
+
+. generate rowid = _n
+
+. drop Z D Sex White 
+
+. save FTAdata_id, replace
+file FTAdata_id.dta saved
+
+. 
+. use "/Users/julietbu/Downloads/ECON970/Final Project/data/NCAdata.dta", clear
+
+. generate rowid = _n
+
+. rename Y Y_NCA
+
+. foreach v of local fta_vars {    
+  2.             capture drop `v'  
+  3. }
+
+. save NCAdata_id, replace
+file NCAdata_id.dta saved
+
+. 
+. use "/Users/julietbu/Downloads/ECON970/Final Project/data/NVCAdata.dta", clear
+
+. generate rowid = _n
+
+. rename Y Y_NVCA
+
+. foreach v of local fta_vars {    
+  2.             capture drop `v'  
+  3. }
+
+. save NVCAdata_id, replace
+file NVCAdata_id.dta saved
+
+. 
+. * Rename variables in PSA data for clarity, add variable to measure judicial-algorithmic agreement
+. use "/Users/julietbu/Downloads/ECON970/Final Project/data/PSAdata.dta", clear
+
+. generate rowid = _n
+
+. rename Z PSA_treatment
+
+. label variable PSA_treatment "Judge Exposure to PSA Score"
+
+. gen judge_decision = (D == 1 | D == 2)
+
+. label variable judge_decision "Judge Non-Monetary Release or Cash Bail/Detention Decision"
+
+. label variable DMF "PSA Release or Detention Recommendation"
+
+. generate agree = (judge_decision == DMF)
+
+. label variable agree "Judge-Algorithm Agreement"
+
+. generate judge_override = (judge_decision == 0 & DMF == 1)
+
+. label variable judge_override "Judge Decision of Release, Algorithm Decision of Bail or Detention"
+
+. save PSAdata_id, replace
+file PSAdata_id.dta saved
+
+. 
+. * Create frame to merge PSA data with FTA, NCA, and NVCA
+. frame create PSAdata 
+
+. frame change PSAdata
+
+. use "/Users/julietbu/Downloads/ECON970/Final Project/output/PSAdata_id.dta"
+
+. 
+. * Merge with FTA
+. merge 1:1 rowid using "/Users/julietbu/Downloads/ECON970/Final Project/output/FTAdata_id.dta"
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                             0
+    Matched                             1,891  (_merge==3)
+    -----------------------------------------
+
+. keep if _merge == 3
+(0 observations deleted)
+
+. drop _merge
+
+. 
+. * Merge with NCA
+. merge 1:1 rowid using "/Users/julietbu/Downloads/ECON970/Final Project/output/NCAdata_id.dta"
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                             0
+    Matched                             1,891  (_merge==3)
+    -----------------------------------------
+
+. keep if _merge == 3
+(0 observations deleted)
+
+. drop _merge
+
+. 
+. * Merge with NVCA
+. merge 1:1 rowid using "/Users/julietbu/Downloads/ECON970/Final Project/output/NVCAdata_id.dta"
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                             0
+    Matched                             1,891  (_merge==3)
+    -----------------------------------------
+
+. keep if _merge == 3
+(0 observations deleted)
+
+. drop _merge
+
+. 
+. generate anyFlag = (Y_FTA == 1 | Y_NCA == 1 | Y_NVCA == 1)
+
+. label variable anyFlag "Any FTA, NCA, or NVCA Flag"
+
+. save master_PSA, replace
+file master_PSA.dta saved
+
+. 
+end of do-file
+
+. do "/var/folders/7r/tybvzgdd3n363byy489ds6s40000gn/T//SD84448.000000"
+
+. summarize judge_decision if PSA_treatment == 0
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+judge_deci~n |        943     .252386     .434612          0          1
+
+. summarize judge_decision if PSA_treatment == 1
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+judge_deci~n |        948    .2563291    .4368361          0          1
+
+. 
+end of do-file
+
