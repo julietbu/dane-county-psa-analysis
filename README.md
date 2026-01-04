@@ -10,7 +10,7 @@ This project examines how judges utilize algorithmic risk assessment outputs in 
 - **Time period:** January 2017 - December 2018
 - **Key variables:** *judge_override* - a binary measure of whether the judge disagreed with the algorithmic recommendation to release the defendant when the algorithm recommended detention; *judge_decision* - a binary measure of whether the judge ultimately decided to release (0) or detain (1) the defendant
 
-The dataset used in this analysis is stored in `data/raw/`.
+The dataset used in this analysis is stored in `data/raw/`. The cleaned dataset is stored in `data/processed/`.
 
 # Code
 - `code/psa_analysis.do`: Main Stata do-file that runs the full analysis.
