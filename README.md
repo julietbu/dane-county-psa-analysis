@@ -1,4 +1,4 @@
-# dane-county-psa-analysis
+# dane-county-psa-override-analysis
 Replication files for final research and data analysis project completed for ECON 970: Applying Economic Theory to the Law at Harvard University, Fall 2025.
 
 # Overview
